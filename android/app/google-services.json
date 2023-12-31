@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1006357572367",
+    "project_id": "myapp-nandakishor-flutter-proj",
+    "storage_bucket": "myapp-nandakishor-flutter-proj.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1006357572367:android:a7a73cf362756aebadec7a",
+        "android_client_info": {
+          "package_name": "com.example.myapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLTdMoSUxGqCrFLWkesTTSXebfk20K450"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
