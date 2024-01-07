@@ -8,10 +8,10 @@ class LoginView extends StatefulWidget {
   const LoginView({super.key});
 
   @override
-  State<LoginView> createState() => _RegisterViewState();
+  State<LoginView> createState() => _LoginViewState();
 }
 
-class _RegisterViewState extends State<LoginView> {
+class _LoginViewState extends State<LoginView> {
   late final TextEditingController _email;
   late final TextEditingController _password;
   @override
@@ -64,9 +64,14 @@ class _RegisterViewState extends State<LoginView> {
               } on FirebaseAuthException catch (e) {
                 log(e.code);
                 if (e.code == 'user-not-found') {
-                  log('User not found');
-                } else if (e.code == 'wrong-password') {
-                  log('Wrong password');
+                  // ignore: use_build_context_synchronously
+                  await showErroDialog(context, "User not found");
+                } else if (e.code == 'invalid-credential') {
+                  // ignore: use_build_context_synchronously
+                  await showErroDialog(context, "Wrong credentials");
+                } else {
+                  // ignore: use_build_context_synchronously
+                  await showErroDialog(context, e.code.toString());
                 }
               } catch (f) {
                 log(f.toString());
@@ -86,4 +91,22 @@ class _RegisterViewState extends State<LoginView> {
       ),
     );
   }
+}
+
+Future<void> showErroDialog(BuildContext context, String text) {
+  return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('An error occured'),
+          content: Text(text),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('ok'))
+          ],
+        );
+      });
 }
