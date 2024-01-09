@@ -1,9 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer';
 
 import 'package:myapp/consts/routes.dart';
+import 'package:myapp/services/auth/auth_exceptions.dart';
+import 'package:myapp/services/auth/auth_services.dart';
 import 'package:myapp/utilities/showerrordialog.dart';
 
 class LoginView extends StatefulWidget {
@@ -53,13 +53,12 @@ class _LoginViewState extends State<LoginView> {
               final password = _password.text;
               try {
                 // ignore: unused_local_variable
-                final userCredential =
-                    await FirebaseAuth.instance.signInWithEmailAndPassword(
+                final userCredential = await AuthService.firebase().logIn(
                   email: email,
                   password: password,
                 );
-                final user = FirebaseAuth.instance.currentUser;
-                if (user?.emailVerified ?? false) {
+                final user = AuthService.firebase().currentUser;
+                if (user?.isEmailVerified ?? false) {
                   // ignore: use_build_context_synchronously
                   Navigator.of(context).pushNamedAndRemoveUntil(
                     notesRoute,
@@ -73,19 +72,15 @@ class _LoginViewState extends State<LoginView> {
                   );
                 }
                 // ignore: use_build_context_synchronously
-              } on FirebaseAuthException catch (e) {
-                if (e.code == 'user-not-found') {
-                  // ignore: use_build_context_synchronously
-                  await showErroDialog(context, "User not found");
-                } else if (e.code == 'invalid-credential') {
-                  // ignore: use_build_context_synchronously
-                  await showErroDialog(context, "Wrong credentials");
-                } else {
-                  // ignore: use_build_context_synchronously
-                  await showErroDialog(context, e.code.toString());
-                }
-              } catch (f) {
-                log(f.toString());
+              } on UserNotFoundAuthException {
+                // ignore: use_build_context_synchronously
+                await showErroDialog(context, "User not found");
+              } on WrongPasswordAuthException {
+                // ignore: use_build_context_synchronously
+                await showErroDialog(context, "Wrong Password");
+              } on GenericAuthException {
+                // ignore: use_build_context_synchronously
+                await showErroDialog(context, "Something went wrong.");
               }
             },
             child: const Text(
